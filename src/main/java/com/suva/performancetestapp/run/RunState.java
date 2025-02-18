@@ -33,7 +33,7 @@ public class RunState {
   private long averageProcessingTime;
   private long maximumProcessingTime;
 
-  private Map<String, RequestMessage> messages;
+  private Map<String, RequestMessage> messages = new ConcurrentHashMap<>();
 
   public void newState(RunConfiguration configuration) {
     this.configuration = configuration;
@@ -97,6 +97,8 @@ public class RunState {
   }
 
   public RunStateJson toJson() {
+    calculateAverageProcessingTime();
+
     RunStateJson json = new RunStateJson();
     json.setStartTime(startTime);
     json.setEndTime(endTime);
@@ -111,4 +113,15 @@ public class RunState {
     return json;
   }
 
+  private void calculateAverageProcessingTime() {
+    long value = 0L;
+    int count = 0;
+    for (RequestMessage message : messages.values()) {
+      if (message.getDuration() != null) {
+        value += message.getDuration().toMillis();
+        count++;
+      }
+    }
+    averageProcessingTime = count > 0 ? value / count : 0;
+  }
 }

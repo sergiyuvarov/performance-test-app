@@ -26,13 +26,16 @@
   </style>
   <script>
     function refreshTable() {
-      fetch('/status') // Replace with actual endpoint
+      fetch('/status')
       .then(response => response.json())
       .then(data => {
         document.getElementById('elapsedTime').innerText = data.elapsedTime;
         document.getElementById('processedMessages').innerText = data.processedMessages;
         document.getElementById('failedMessages').innerText = data.failedMessages;
         document.getElementById('successMessages').innerText = data.successMessages;
+        document.getElementById('minTime').innerText = data.minimumProcessingTime;
+        document.getElementById('maxTime').innerText = data.maximumProcessingTime;
+        document.getElementById('avgTime').innerText = data.averageProcessingTime;
       })
       .catch(error => console.error('Error fetching status:', error));
     }
@@ -61,6 +64,19 @@
       <td><b>Success Messages</b></td>
       <td id="successMessages">-</td>
     </tr>
+    <tr>
+      <td><b>Minimum Processing Time</b></td>
+      <td id="minTime">-</td>
+    </tr>
+    <tr>
+      <td><b>Average Processing Time</b></td>
+      <td id="avgTime">-</td>
+    </tr>
+    <tr>
+      <td><b>Maximum Processing Time</b></td>
+      <td id="maxTime">-</td>
+    </tr>
+
   </table>
 
   <br/>
