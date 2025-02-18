@@ -8,16 +8,19 @@
       gap: 10px;
       margin-top: 20px;
     }
+
     .button-container button {
       padding: 5px 10px;
       font-size: 16px;
       cursor: pointer;
     }
+
     table {
       width: 50%;
       margin: 20px auto;
       border-collapse: collapse;
     }
+
     th, td {
       border: 1px solid black;
       padding: 8px;
@@ -27,15 +30,9 @@
   <script>
     function refreshTable() {
       fetch('/status')
-      .then(response => response.json())
+      .then(response => response.text())
       .then(data => {
-        document.getElementById('elapsedTime').innerText = data.elapsedTime;
-        document.getElementById('processedMessages').innerText = data.processedMessages;
-        document.getElementById('failedMessages').innerText = data.failedMessages;
-        document.getElementById('successMessages').innerText = data.successMessages;
-        document.getElementById('minTime').innerText = data.minimumProcessingTime;
-        document.getElementById('maxTime').innerText = data.maximumProcessingTime;
-        document.getElementById('avgTime').innerText = data.averageProcessingTime;
+        document.getElementById('table-container').innerHTML = data;
       })
       .catch(error => console.error('Error fetching status:', error));
     }
@@ -47,46 +44,47 @@
 <div align="center">
   <h1>Run state</h1>
 
-  <table>
-    <tr>
-      <td><b>Elapsed  Time</b></td>
-      <td id="elapsedTime">-</td>
-    </tr>
-    <tr>
-      <td><b>Processed Messages</b></td>
-      <td id="processedMessages">-</td>
-    </tr>
-    <tr>
-      <td><b>Failed Messages</b></td>
-      <td id="failedMessages">-</td>
-    </tr>
-    <tr>
-      <td><b>Success Messages</b></td>
-      <td id="successMessages">-</td>
-    </tr>
-    <tr>
-      <td><b>Minimum Processing Time</b></td>
-      <td id="minTime">-</td>
-    </tr>
-    <tr>
-      <td><b>Average Processing Time</b></td>
-      <td id="avgTime">-</td>
-    </tr>
-    <tr>
-      <td><b>Maximum Processing Time</b></td>
-      <td id="maxTime">-</td>
-    </tr>
+  <div id="table-container">
+    <table id="table">
+      <tr>
+        <td><b>Elapsed Time</b></td>
+        <td th:text="${state.getElapsedTime()}">-</td>
+      </tr>
+      <tr>
+        <td><b>Processed Messages</b></td>
+        <td th:text="${state.getProcessedMessages()}">-</td>
+      </tr>
+      <tr>
+        <td><b>Failed Messages</b></td>
+        <td th:text="${state.getFailedMessages()}">-</td>
+      </tr>
+      <tr>
+        <td><b>Success Messages</b></td>
+        <td th:text="${state.getSuccessMessages()}">-</td>
+      </tr>
+      <tr>
+        <td><b>Minimum Processing Time, mS</b></td>
+        <td th:text="${state.getMinimumProcessingTime()}">-</td>
+      </tr>
+      <tr>
+        <td><b>Average Processing Time, mS</b></td>
+        <td th:text="${state.getAverageProcessingTime()}">-</td>
+      </tr>
+      <tr>
+        <td><b>Maximum Processing Time, mS</b></td>
+        <td th:text="${state.getMaximumProcessingTime()}">-</td>
+      </tr>
 
-  </table>
-
+    </table>
+  </div>
   <br/>
   <div class="button-container">
-  <form action="#" th:action="@{/stop}" method="post">
-    <button th:disabled="${!state.running}" type="submit" class="btn btn-primary">Stop</button>
-  </form>
-  <form action="#" th:action="@{/newRun}" method="post">
-    <button th:disabled="${state.running}" type="submit" class="btn btn-primary">New Run</button>
-  </form>
+    <form action="#" th:action="@{/stop}" method="post">
+      <button th:disabled="${!state.running}" type="submit" class="btn btn-primary">Stop</button>
+    </form>
+    <form action="#" th:action="@{/newRun}" method="post">
+      <button th:disabled="${state.running}" type="submit" class="btn btn-primary">New Run</button>
+    </form>
   </div>
 </div>
 </body>

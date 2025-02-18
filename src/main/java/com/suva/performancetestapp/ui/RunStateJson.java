@@ -3,7 +3,6 @@ package com.suva.performancetestapp.ui;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Getter;
 import lombok.Setter;
 

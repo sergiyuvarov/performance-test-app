@@ -3,7 +3,6 @@ package com.suva.performancetestapp.run;
 import com.suva.performancetestapp.test.JsonMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
 
 @Slf4j
@@ -24,14 +23,14 @@ public class Worker implements Runnable {
       RequestMessage requestMessage = runState.createRequestMessage();
       JsonMessage jsonMessage = new JsonMessage(requestMessage.getCorrelationId());
       restClient.post().body(jsonMessage).retrieve()
-          .onStatus(HttpStatusCode::isError, (request, response) -> {
-
-            log.error("Error while posting json message, status: {}, url: {} ", response.getStatusCode(), request.getURI());
-          })
+          .onStatus(HttpStatusCode::isError, (request, response) ->
+              log.error("Error while posting json message, status: {}, url: {} ",
+                  response.getStatusCode(), request.getURI()))
           .toBodilessEntity();
 
       runState.incrementProcessedMessages();
-      log.info("Send message {} : {}", runState.getProcessedMessages(), requestMessage.getCorrelationId());
+      log.info("Send message {} : {}", runState.getProcessedMessages(),
+          requestMessage.getCorrelationId());
 
       try {
         Thread.sleep(runState.getConfiguration().getDelay());

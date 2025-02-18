@@ -2,11 +2,8 @@ package com.suva.performancetestapp.ui;
 
 import com.suva.performancetestapp.run.RunConfiguration;
 import com.suva.performancetestapp.run.RunService;
-import com.suva.performancetestapp.run.RunState;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,16 +14,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequiredArgsConstructor
 public class UIController {
+
+  public static final String STATE_ATTR = "state";
   private final RunService runService;
 
   @GetMapping("/")
-  public String index(Model model) {
+  public String index() {
     return runService.getRunState().isRunning() ? "redirect:/runState" : "redirect:/newRun";
   }
 
   @GetMapping("/runState")
   public String runState(Model model) {
-    model.addAttribute("state", runService.getRunState());
+    model.addAttribute(STATE_ATTR, runService.getRunState().toJson());
     return "runState";
   }
 
@@ -49,7 +48,7 @@ public class UIController {
   @PostMapping("/stop")
   public String stop(Model model) {
     runService.stopProcessing();
-    model.addAttribute("state", runService.getRunState());
+    model.addAttribute(STATE_ATTR, runService.getRunState().toJson());
     return "runState";
   }
 
@@ -58,8 +57,9 @@ public class UIController {
    return "redirect:/newRun";
   }
 
-  @GetMapping(path = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<RunStateJson> getStatus() {
-    return ResponseEntity.ok(runService.getRunState().toJson());
+  @GetMapping(path = "/status")
+  public String getStatus2(Model model) {
+    model.addAttribute(STATE_ATTR, runService.getRunState().toJson());
+    return "runState :: #table";
   }
 }
