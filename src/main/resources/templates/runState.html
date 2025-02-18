@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <style>
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .button-container button {
+      padding: 5px 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    table {
+      width: 50%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+  <script>
+    function refreshTable() {
+      fetch('/status') // Replace with actual endpoint
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('elapsedTime').innerText = data.elapsedTime;
+        document.getElementById('processedMessages').innerText = data.processedMessages;
+        document.getElementById('failedMessages').innerText = data.failedMessages;
+        document.getElementById('successMessages').innerText = data.successMessages;
+      })
+      .catch(error => console.error('Error fetching status:', error));
+    }
+
+    const intervalId = setInterval(refreshTable, 300); // Refresh every 100mS
+  </script>
+</head>
+<body>
+<div align="center">
+  <h1>Run state</h1>
+
+  <table>
+    <tr>
+      <td><b>Elapsed  Time</b></td>
+      <td id="elapsedTime">-</td>
+    </tr>
+    <tr>
+      <td><b>Processed Messages</b></td>
+      <td id="processedMessages">-</td>
+    </tr>
+    <tr>
+      <td><b>Failed Messages</b></td>
+      <td id="failedMessages">-</td>
+    </tr>
+    <tr>
+      <td><b>Success Messages</b></td>
+      <td id="successMessages">-</td>
+    </tr>
+  </table>
+
+  <br/>
+  <div class="button-container">
+  <form action="#" th:action="@{/stop}" method="post">
+    <button th:disabled="${!state.running}" type="submit" class="btn btn-primary">Stop</button>
+  </form>
+  <form action="#" th:action="@{/newRun}" method="post">
+    <button th:disabled="${state.running}" type="submit" class="btn btn-primary">New Run</button>
+  </form>
+  </div>
+</div>
+</body>
+</html>

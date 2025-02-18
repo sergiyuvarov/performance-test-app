@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+  <html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div align="center">
+  <h1>New Run</h1>
+  <br/>
+  <form action="#" th:action="@{/run}" th:object="${configuration}" method="post">
+    <table border="0" cellpadding="10">
+      <tr>
+        <td>Number of threads:</td>
+        <td><input type="text" th:field="*{numberOfThreads}" class="form-control" /></td>
+        <td th:if="${#fields.hasErrors('numberOfThreads')}" th:errors="*{numberOfThreads}">Number of threads Error</td>
+      </tr>
+      <tr>
+        <td>Delay:</td>
+        <td><input type="text" th:field="*{delay}" class="form-control" /></td>
+        <td th:if="${#fields.hasErrors('delay')}" th:errors="*{durationStr}">Delay Error</td>
+      </tr>
+      <tr>
+        <td>Number of messages:</td>
+        <td><input type="text" th:field="*{numberOfMessages}" class="form-control" /></td>
+        <td th:if="${#fields.hasErrors('numberOfMessages')}" th:errors="*{numberOfMessages}">Number of messages Error</td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center"><button type="submit" class="btn btn-primary">Start</button></td>
+      </tr>
+    </table>
+  </form>
+</div>
+</body>
+</html>
